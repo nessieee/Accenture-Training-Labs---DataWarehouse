@@ -1,0 +1,19 @@
+-- finding 14 consecutive days where beer ('Piwo') sales were the highest
+
+with data as(
+SELECT
+	main.dim_date.date_value AS day,
+	SUM(main.fct_receipt_line.net_amount_pln) AS NET
+FROM main.fct_receipt_line
+	JOIN main.dim_product
+		ON main.dim_product.product_key = main.fct_receipt_line.product_key
+	JOIN main.dim_date
+		ON main.fct_receipt_line.date_key = main.dim_date.date_key
+WHERE main.dim_product.product_subcategory = 'Piwo'
+GROUP BY 1
+)
+
+SELECT 
+	day,
+	SUM(NET) OVER (ORDER BY day ROWS BETWEEN CURRENT ROW AND 13 FOLLOWING) AS fourteen_day_rolling_total
+FROM data; 
