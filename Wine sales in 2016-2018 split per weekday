@@ -1,0 +1,17 @@
+-- Deatermining the wine ('Wino')sales split per weekdays (dzien_tygodnia) in years 2016-2018
+
+SELECT 
+	main.dim_date.year AS rok,
+	main.dim_date.weekday_name AS dzien_tygodnia,
+	main.dim_date.weekday_num AS numer_dnia,
+	SUM(main.fct_receipt_line.net_amount_pln) AS netto,
+	SUM(main.fct_receipt_line.gross_amount_pln) AS gross
+FROM main.fct_receipt_line
+	JOIN main.dim_product
+		ON main.dim_product.product_key = main.fct_receipt_line.product_key
+	JOIN main.dim_date
+		ON main.fct_receipt_line.date_key = main.dim_date.date_key
+WHERE main.dim_product.product_subcategory =  'Wino'
+GROUP BY 1,2,3
+ORDER BY 1 DESC, 3 ASC
+;
