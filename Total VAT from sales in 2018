@@ -1,0 +1,11 @@
+-- Calculating total VAT value for sales in 2018
+
+SELECT
+	SUM(main.fct_receipt.receipt_net_amount_pln) AS NET
+	SUM(main.fct_receipt.receipt_gross_amount_pln) AS GROSS,
+	SUM(main.fct_receipt.receipt_gross_amount_pln) - SUM(main.fct_receipt.receipt_net_amount_pln) as VAT
+FROM main.fct_receipt
+	JOIN main.dim_date
+		ON main.dim_date.date_key = main.fct_receipt.date_key
+WHERE main.dim_date.year = '2018'
+;
